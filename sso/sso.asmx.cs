@@ -190,9 +190,16 @@ namespace sso
         <p>输出格式：<strong>json</strong></p></br>")]
         public void GetUserPermissionList()
         {
+            HttpRequest request = HttpContext.Current.Request;
+            Stream stream = request.InputStream;
+            StreamReader streamReader = new StreamReader(stream);
+            string param = string.Empty;
+            param = streamReader.ReadToEnd();
+            //page=2&rows=10
+            param = HttpUtility.UrlDecode(param);
             Context.Response.ContentType = "application/json;charset=utf-8";
             Context.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
-            Context.Response.Write(ssoService.GetUserPermissionList());
+            Context.Response.Write(ssoService.GetUserPermissionList(param));
             Context.Response.End();
         }
 

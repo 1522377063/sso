@@ -392,48 +392,17 @@ namespace sso.service.impl
             }
         }
 
-        /*
-         * 获取类似
-         * {
-              "total": 2,
-              "rows": [
-                {
-                  "username": "张三",
-                  "cunzhuang": "<input type='checkbox' value='cunzhuang' checked/>",
-                  "cesuo": "<input type='checkbox' value='cesuo' />",
-                  "minsu": "<input type='checkbox' value='minsu' />",
-                  "jingqu": "<input type='checkbox' value='jingqu' checked/>",
-                  "addtuceng": "<input type='checkbox' value='addtuceng' checked/>",
-                  "shouhuiditu": "<input type='checkbox' value='shouhuiditu' />",
-                  "addimage": "<input type='checkbox' value='addimage' />",
-                  "ninghaimaoyucun": "<input type='checkbox' value='ninghaimaoyucun' />",
-                  "ninghai": "<input type='checkbox' value='ninghai' checked/>",
-                  "addmodel": "<input type='checkbox' value='addmodel' />",
-                  "addpanorama": "<input type='checkbox' value='addpanorama' checked/>"
-                },
-                {
-                  "username": "李四",
-                  "addpanorama": "<input type='checkbox' value='addpanorama' checked/>",
-                  "cunzhuang": "<input type='checkbox' value='cunzhuang' />",
-                  "cesuo": "<input type='checkbox' value='cesuo' />",
-                  "minsu": "<input type='checkbox' value='minsu' checked/>",
-                  "jingqu": "<input type='checkbox' value='jingqu' checked/>",
-                  "addtuceng": "<input type='checkbox' value='addtuceng' />",
-                  "shouhuiditu": "<input type='checkbox' value='shouhuiditu' />",
-                  "addimage": "<input type='checkbox' value='addimage' checked/>",
-                  "ninghaimaoyucun": "<input type='checkbox' value='ninghaimaoyucun' />",
-                  "ninghai": "<input type='checkbox' value='ninghai' checked/>",
-                  "addmodel": "<input type='checkbox' value='addmodel' />"
-                }
-              ]
-            }
-            这样的json数据
-         */
-        public string GetUserPermissionList()
+        public string GetUserPermissionList(string param)
         {
+            string[] p= param.Split(new char[] { '=','&' });
             //获取每一个用户
-            strSql = "SELECT * FROM `user`";
-            List<User> userList = ResultUtil.getResultList<User>(strSql);
+            strSql = "SELECT * FROM `user` LIMIT @begin,@rows";
+            mySqlParameters = new MySqlParameter[]
+            {
+                new MySqlParameter("@begin",MySqlDbType.Int32) {Value=((Convert.ToInt32(p[1])-1)*Convert.ToInt32(p[3])) },
+                new MySqlParameter("@rows",MySqlDbType.Int32) {Value=Convert.ToInt32(p[3]) }
+            };
+            List<User> userList = ResultUtil.getResultList<User>(strSql,mySqlParameters);
             JObject jo1=new JObject();
             jo1.Add("total", userList.Count);
             if (userList!=null)

@@ -17,7 +17,7 @@ namespace sso.service
         string getReportListById(int id);
         string AddReport(int id, string report_person, string reportdate, string phone, string content, string type, int pid);
         string UpdateReport(int id, string report_person, string reportdate, string phone, string content, string type, int pid);
-        string GetUserPermissionList();
+        string GetUserPermissionList(string param);
         string EditUserPermission(string json);
         string DeleteUserPermission(string json);
     }
