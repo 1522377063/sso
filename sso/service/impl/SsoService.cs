@@ -394,6 +394,7 @@ namespace sso.service.impl
 
         public string GetUserPermissionList(int page, int rows)
         {
+            int total = int.Parse(ResultUtil.getResultString("SELECT count(1) FROM `user`"));
             //获取每一个用户
             strSql = "SELECT * FROM `user` LIMIT @begin,@rows";
             mySqlParameters = new MySqlParameter[]
@@ -403,13 +404,14 @@ namespace sso.service.impl
             };
             List<User> userList = ResultUtil.getResultList<User>(strSql,mySqlParameters);
             JObject jo1=new JObject();
-            jo1.Add("total", userList.Count);
+            jo1.Add("total", total);
             if (userList!=null)
             {
                 JArray ja = new JArray();
                 
                 foreach (User user in userList)
                 {
+
                     strSql =@"SELECT u.hy_username as username,p.p_name as pname,up.p_value as pvalue FROM user_permission up RIGHT JOIN (SELECT * FROM `user` WHERE `user`.hy_userid=@hy_userid) u ON up.uid=u.hy_userid RIGHT JOIN permission p ON up.pid=p.p_id";
                     mySqlParameters = new MySqlParameter[]
                     {
@@ -453,7 +455,41 @@ namespace sso.service.impl
             dic.Add("ninghai", (int)jo["ninghai"]);
             dic.Add("addmodel", (int)jo["addmodel"]);
             dic.Add("addpanorama", (int)jo["addpanorama"]);
-            foreach(KeyValuePair<string,int> kv in dic)
+            strSql = @"SELECT u.hy_username as username,p.p_name as pname,up.p_value as pvalue FROM user_permission up RIGHT JOIN (SELECT * FROM `user` WHERE `user`.hy_username=@hy_username) u ON up.uid=u.hy_userid RIGHT JOIN permission p ON up.pid=p.p_id";
+            mySqlParameters = new MySqlParameter[]
+            {
+                new MySqlParameter("@hy_userid",MySqlDbType.Int32) {Value = username},
+            };
+            //获取每一个用户对应的权限
+            List<PartPermission> partPermissionList = ResultUtil.getResultList<PartPermission>(strSql, mySqlParameters);
+            foreach (PartPermission pp in partPermissionList)
+            {
+                if (pp.pvalue == null && pp.username==null)
+                {
+                    strSql =
+                        @"SELECT COUNT(1) FROM user_permission up WHERE up.uid=(SELECT u.hy_userid FROM `user` u WHERE u.hy_username=@hy_username) AND up.pid=(SELECT p.p_id FROM permission p WHERE p.p_name=@p_name)";
+                    mySqlParameters = new MySqlParameter[]
+                    {
+                        new MySqlParameter("@hy_username",MySqlDbType.VarChar,50) {Value=username },
+                        new MySqlParameter("@p_name",MySqlDbType.VarChar,50) {Value=pp.pname }
+                    };
+                    int num = int.Parse(ResultUtil.getResultString(strSql, mySqlParameters));
+                    if (num > 0)
+                    {
+                        continue;
+                    }
+                    strSql =
+                        @"INSERT INTO user_permission (uid,pid,p_value) VALUES((SELECT u.hy_userid FROM `user` u WHERE u.hy_username=@hy_username),(SELECT p.p_id FROM permission p WHERE p.p_name=@p_name),@p_value)";
+                    mySqlParameters = new MySqlParameter[]
+                    {
+                        new MySqlParameter("@hy_username",MySqlDbType.VarChar,50) {Value=username },
+                        new MySqlParameter("@p_name",MySqlDbType.VarChar,50) {Value=pp.pname },
+                        new MySqlParameter("@p_value",MySqlDbType.Int32) {Value=pp.pvalue }
+                    };
+                    ResultUtil.insOrUpdOrDel(strSql, mySqlParameters);
+                }
+            }
+            foreach (KeyValuePair<string,int> kv in dic)
             {
                 strSql = "UPDATE user_permission up SET up.p_value=@p_value WHERE up.uid=(SELECT `user`.hy_userid FROM `user` WHERE `user`.hy_username=@hy_username) AND up.pid=(SELECT permission.p_id FROM permission WHERE permission.p_name=@p_name)";
                 mySqlParameters = new MySqlParameter[]

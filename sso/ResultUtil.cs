@@ -64,6 +64,46 @@ namespace sso.utils
         }
         #endregion
 
+        #region 查询返回字符集
+        /// <summary>
+        /// 查询返回字符集
+        /// </summary>
+        /// <param name="sqlStr">sql字符</param>
+        /// <returns>string</returns>
+        public static string getResultString(string sqlStr)
+        {
+            //创建数据库连接
+            MySqlConnection conn = new MySqlConnect().getConnection(new MySqlConnect().connection());
+            //执行数据库查询操作
+            string result = MySqlHelper.ExecuteScalar(conn, sqlStr).ToString();
+            //关闭释放连接资源
+            conn.Close();
+
+            //返回字符集
+            return result;
+        }
+        #endregion
+
+        #region 数据库参数式查询返回字符集
+        /// <summary>
+        /// 数据库参数式查询返回字符集
+        /// </summary>
+        /// <param name="sqlStr">sql字符</param>
+        /// <returns>string</returns>
+        public static string getResultString(string sqlStr, MySqlParameter[] commandParameters)
+        {
+            //创建数据库连接
+            MySqlConnection conn = new MySqlConnect().getConnection(new MySqlConnect().connection());
+            //执行数据库查询操作
+            string result = MySqlHelper.ExecuteScalar(conn, sqlStr, commandParameters).ToString();
+            //关闭释放连接资源
+            conn.Close();
+
+            //返回字符集
+            return result;
+        }
+        #endregion
+
         #region 新增、修改、删除操作
         /// <summary>
         /// 新增、修改、删除操作
@@ -122,7 +162,7 @@ namespace sso.utils
             try
             {
                 //执行数据库新增、修改、删除操作
-                result= MySqlHelper.ExecuteNonQuery(conn, sqlStr, commandParameters);
+                result = MySqlHelper.ExecuteNonQuery(conn, sqlStr, commandParameters);
                 //事务提交
                 myTrans.Commit();
                 //关闭释放连接资源
@@ -140,6 +180,66 @@ namespace sso.utils
                 LogHelper.WriteError("新增、修改、删除操作异常回滚：" + ex.Message);
                 return 0;
             }
+        }
+        #endregion
+
+        #region 查询返回DataSet
+        /// <summary>
+        /// 查询返回DataSet
+        /// </summary>
+        /// <param name="sqlStr">sql语句</param>
+        /// <returns>getDataSet<T></returns>
+        public static DataSet getDataSet(string sqlStr)
+        {
+            //创建数据库连接
+            MySqlConnection conn = new MySqlConnect().getConnection(new MySqlConnect().connection());
+            //执行数据库查询操作
+            DataSet ds = MySqlHelper.ExecuteDataset(conn, sqlStr);
+            //关闭释放连接资源
+            conn.Close();
+
+            //返回DataTable
+            return ds;
+        }
+        #endregion
+
+        #region 查询返回DataTable
+        /// <summary>
+        /// 查询返回DataTable
+        /// </summary>
+        /// <param name="sqlStr">sql语句</param>
+        /// <returns>DataTable<T></returns>
+        public static DataTable getDataTable(string sqlStr)
+        {
+            //创建数据库连接
+            MySqlConnection conn = new MySqlConnect().getConnection(new MySqlConnect().connection());
+            //执行数据库查询操作
+            DataTable dt = MySqlHelper.ExecuteDataset(conn, sqlStr).Tables[0];
+            //关闭释放连接资源
+            conn.Close();
+
+            //返回DataTable
+            return dt;
+        }
+        #endregion
+
+        #region 数据库参数式查询返回DataTable
+        /// <summary>
+        /// 数据库参数式查询返回DataTable
+        /// </summary>
+        /// <param name="sqlStr">sql语句</param>
+        /// <returns>DataTable<T></returns>
+        public static DataTable getDataTable(string sqlStr, MySqlParameter[] commandParameters)
+        {
+            //创建数据库连接
+            MySqlConnection conn = new MySqlConnect().getConnection(new MySqlConnect().connection());
+            //执行数据库查询操作
+            DataTable dt = MySqlHelper.ExecuteDataset(conn, sqlStr, commandParameters).Tables[0];
+            //关闭释放连接资源
+            conn.Close();
+
+            //返回DataTable
+            return dt;
         }
         #endregion
 

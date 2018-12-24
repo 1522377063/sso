@@ -186,6 +186,7 @@ namespace sso
 
         [WebMethod(Description = @"<h3>method: GetUserPermissionList</h3>
         <p>方法描述：<strong>查询用户权限列表</strong></p> 
+        <p>参数：{<strong>page<=>当前页|</strong><strong>rows<=>分页每页大小|</strong>}</p>
         <p style='color:green'>成功结果：<strong>{'total':2,'rows':[{'username':'张三','cunzhuang':1,'cesuo':0,'minsu':0,'jingqu':1,'addtuceng':1,'shouhuiditu':0,'addimage':0,'ninghaimaoyucun':0,'ninghai':1,'addmodel':0,'addpanorama':1}]}</strong></p>
         <p>输出格式：<strong>json</strong></p></br>")]
         public void GetUserPermissionList(int page,int rows)
@@ -198,6 +199,7 @@ namespace sso
 
         [WebMethod(Description = @"<h3>method: EditUserPermission</h3>
         <p>方法描述：<strong>修改用户权限列表</strong></p> 
+        <p>参数：{<strong>json<=>要编辑的数据以json格式传送</strong>}</p>
         <p style='color:green'>成功结果：<strong>{status: '200', message: '修改成功', result: null}</strong></p>
         < p>输出格式：<strong>json</strong></p></br>")]
         public void EditUserPermission(string json)
@@ -218,6 +220,7 @@ namespace sso
 
         [WebMethod(Description = @"<h3>method: DeleteUserPermission</h3>
         <p>方法描述：<strong>删除用户权限列表</strong></p> 
+        <p>参数：{<strong>username<=>用户名</strong>}</p>
         <p style='color:green'>成功结果：<strong>{status: '200', message: '删除成功', result: null}</strong></p>
         < p>输出格式：<strong>json</strong></p></br>")]
         public void DeleteUserPermission(string username)
