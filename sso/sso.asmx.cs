@@ -188,18 +188,11 @@ namespace sso
         <p>方法描述：<strong>查询用户权限列表</strong></p> 
         <p style='color:green'>成功结果：<strong>{'total':2,'rows':[{'username':'张三','cunzhuang':1,'cesuo':0,'minsu':0,'jingqu':1,'addtuceng':1,'shouhuiditu':0,'addimage':0,'ninghaimaoyucun':0,'ninghai':1,'addmodel':0,'addpanorama':1}]}</strong></p>
         <p>输出格式：<strong>json</strong></p></br>")]
-        public void GetUserPermissionList()
+        public void GetUserPermissionList(int page,int rows)
         {
-            HttpRequest request = HttpContext.Current.Request;
-            Stream stream = request.InputStream;
-            StreamReader streamReader = new StreamReader(stream);
-            string param = string.Empty;
-            param = streamReader.ReadToEnd();
-            //page=2&rows=10
-            param = HttpUtility.UrlDecode(param);
             Context.Response.ContentType = "application/json;charset=utf-8";
             Context.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
-            Context.Response.Write(ssoService.GetUserPermissionList(param));
+            Context.Response.Write(ssoService.GetUserPermissionList(page,rows));
             Context.Response.End();
         }
 
@@ -207,15 +200,15 @@ namespace sso
         <p>方法描述：<strong>修改用户权限列表</strong></p> 
         <p style='color:green'>成功结果：<strong>{status: '200', message: '修改成功', result: null}</strong></p>
         < p>输出格式：<strong>json</strong></p></br>")]
-        public void EditUserPermission()
+        public void EditUserPermission(string json)
         {
-            HttpRequest request = HttpContext.Current.Request;
-            Stream stream = request.InputStream;
-            StreamReader streamReader = new StreamReader(stream);
-            string json = string.Empty;
-            json = streamReader.ReadToEnd();
-            //{"username":"张三","cunzhuang":0,"cesuo":0,"minsu":1,"jingqu":1,"addtuceng":1,"shouhuiditu":0,"addimage":1,"ninghaimaoyucun":0,"ninghai":1,"addmodel":1,"addpanorama":1}
-            json = HttpUtility.UrlDecode(json);
+            //HttpRequest request = HttpContext.Current.Request;
+            //Stream stream = request.InputStream;
+            //StreamReader streamReader = new StreamReader(stream);
+            //string json = string.Empty;
+            //json = streamReader.ReadToEnd();
+            ////{"username":"张三","cunzhuang":0,"cesuo":0,"minsu":1,"jingqu":1,"addtuceng":1,"shouhuiditu":0,"addimage":1,"ninghaimaoyucun":0,"ninghai":1,"addmodel":1,"addpanorama":1}
+            //json = HttpUtility.UrlDecode(json);
 
             Context.Response.ContentType = "application/json;charset=utf-8";
             Context.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
@@ -227,19 +220,11 @@ namespace sso
         <p>方法描述：<strong>删除用户权限列表</strong></p> 
         <p style='color:green'>成功结果：<strong>{status: '200', message: '删除成功', result: null}</strong></p>
         < p>输出格式：<strong>json</strong></p></br>")]
-        public void DeleteUserPermission()
+        public void DeleteUserPermission(string username)
         {
-            HttpRequest request = HttpContext.Current.Request;
-            Stream stream = request.InputStream;
-            StreamReader streamReader = new StreamReader(stream);
-            string json = string.Empty;
-            json = streamReader.ReadToEnd();
-            //{"username":"张三"}
-            json = HttpUtility.UrlDecode(json);
-
             Context.Response.ContentType = "application/json;charset=utf-8";
             Context.Response.ContentEncoding = Encoding.GetEncoding("utf-8");
-            Context.Response.Write(ssoService.DeleteUserPermission(json));
+            Context.Response.Write(ssoService.DeleteUserPermission(username));
             Context.Response.End();
         }
         

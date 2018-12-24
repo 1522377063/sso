@@ -392,15 +392,14 @@ namespace sso.service.impl
             }
         }
 
-        public string GetUserPermissionList(string param)
+        public string GetUserPermissionList(int page, int rows)
         {
-            string[] p= param.Split(new char[] { '=','&' });
             //获取每一个用户
             strSql = "SELECT * FROM `user` LIMIT @begin,@rows";
             mySqlParameters = new MySqlParameter[]
             {
-                new MySqlParameter("@begin",MySqlDbType.Int32) {Value=((Convert.ToInt32(p[1])-1)*Convert.ToInt32(p[3])) },
-                new MySqlParameter("@rows",MySqlDbType.Int32) {Value=Convert.ToInt32(p[3]) }
+                new MySqlParameter("@begin",MySqlDbType.Int32) {Value=((page-1)*Convert.ToInt32(rows)) },
+                new MySqlParameter("@rows",MySqlDbType.Int32) {Value=Convert.ToInt32(rows) }
             };
             List<User> userList = ResultUtil.getResultList<User>(strSql,mySqlParameters);
             JObject jo1=new JObject();
@@ -469,10 +468,8 @@ namespace sso.service.impl
             return ResultUtil.getStandardResult((int)Status.Normal, EnumUtil.getMessageStr((int)Message.Update), null);
         }
 
-        public string DeleteUserPermission(string json)
+        public string DeleteUserPermission(string username)
         {
-            JObject jo = JsonConvert.DeserializeObject(json) as JObject;
-            string username = jo["username"].ToString();
             strSql = "DELETE FROM user_permission WHERE user_permission.uid=(SELECT `user`.hy_userid FROM `user` WHERE `user`.hy_username=@hy_username)";
             mySqlParameters = new MySqlParameter[]
             {
