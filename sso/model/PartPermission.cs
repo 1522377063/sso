@@ -9,6 +9,6 @@ namespace sso.model
     {
         public string username { get; set; }
         public string pname { get; set; }
-        public int? pvalue { get; set; }
+        public string pvalue { get; set; }
     }
 }
